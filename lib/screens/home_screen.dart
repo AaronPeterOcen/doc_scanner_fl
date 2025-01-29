@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:doc_scanner_fl/screens/recognitionScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -109,6 +112,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       onTap: () async {
                         XFile? xFile = await imagePicker.pickImage(
                             source: ImageSource.gallery);
+                        if (xFile != null) {
+                          File image = File(xFile.path);
+                          // ignore: use_build_context_synchronously
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (ctx) {
+                            return Recognitionscreen(image);
+                          }));
+                        }
                       },
                     )
                   ],
