@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 // FlutterError
 class HomeScreen extends StatefulWidget {
@@ -9,6 +10,15 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late ImagePicker imagePicker;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    imagePicker = ImagePicker();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -88,12 +98,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     InkWell(
                       child: Image.asset("assets/images/camera-100.png",
                           width: 50, height: 50),
-                      onTap: () {},
+                      onTap: () async {
+                        XFile? xFile = await imagePicker.pickImage(
+                            source: ImageSource.camera);
+                      },
                     ),
                     InkWell(
                       child: Image.asset("assets/images/gallery-100.png",
                           width: 50, height: 50),
-                      onTap: () {},
+                      onTap: () async {
+                        XFile? xFile = await imagePicker.pickImage(
+                            source: ImageSource.gallery);
+                      },
                     )
                   ],
                 ),
