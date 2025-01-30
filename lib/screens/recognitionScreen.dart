@@ -5,6 +5,7 @@ import 'dart:math';
 // import 'com.google.mlkit.vision.text.TextRecognition';
 // import 'com.google.mlkit.vision.text.TextRecognizer';
 // import 'com.google.mlkit.vision.text.latin.TextRecognizerOptions';
+import 'package:flutter/services.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:flutter/material.dart';
 
@@ -89,8 +90,15 @@ class _RecognitionscreenState extends State<Recognitionscreen> {
                         Text("Results",
                             style:
                                 TextStyle(fontSize: 18, color: Colors.white)),
-                        Image.asset("assets/images/copy-50.png",
-                            width: 30, height: 30),
+                        InkWell(
+                          onTap: () {
+                            Clipboard.setData(ClipboardData(text: results));
+                            SnackBar sn = SnackBar(content: Text("Copied"));
+                            ScaffoldMessenger.of(context).showSnackBar(sn);
+                          },
+                          child: Image.asset("assets/images/copy-50.png",
+                              width: 30, height: 30),
+                        ),
                       ],
                     ),
                   ),
