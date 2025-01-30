@@ -28,13 +28,20 @@ class _RecognitionscreenState extends State<Recognitionscreen> {
     doTextRecognition();
   }
 
+  String results = "";
+
   doTextRecognition() async {
     InputImage inputImage = InputImage.fromFile(widget.image);
     final RecognizedText recognizedText =
         await textRecognizer.processImage(inputImage);
 
-    String text = recognizedText.text;
-    print(text);
+    results = recognizedText.text;
+    // String text = recognizedText.text;
+    print(results);
+    setState(() {
+      results;
+    });
+
     for (TextBlock block in recognizedText.blocks) {
       final Rect rect = block.boundingBox;
       final List<Point<int>> cornerPoints = block.cornerPoints;
@@ -54,16 +61,52 @@ class _RecognitionscreenState extends State<Recognitionscreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: const Color.fromARGB(255, 76, 175, 224),
         title: Center(
             child: Text(
           "Recognition",
-          style: TextStyle(color: Colors.white70),
+          style: TextStyle(color: Colors.white),
         )),
       ),
       // ignore: avoid_unnecessary_containers
-      body: Container(
-        child: Image.file(widget.image),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Center(child: Image.file(widget.image)),
+            Card(
+              margin: EdgeInsets.all(10),
+              color: Colors.white70,
+              child: Column(
+                children: [
+                  Container(
+                    color: const Color.fromARGB(255, 76, 175, 224),
+                    padding: EdgeInsets.all(8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Image.asset("assets/images/scanning-100.png",
+                            width: 30, height: 30),
+                        Text("Results",
+                            style:
+                                TextStyle(fontSize: 18, color: Colors.white)),
+                        Image.asset("assets/images/copy-50.png",
+                            width: 30, height: 30),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(results, style: TextStyle(fontSize: 18)),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
