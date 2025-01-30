@@ -1,3 +1,4 @@
 {
-  "cSpell.words": ["Recognitionscreen"]
+  "cSpell.words": ["mlkit", "Recognitionscreen"],
+  "java.configuration.updateBuildConfiguration": "interactive"
 }

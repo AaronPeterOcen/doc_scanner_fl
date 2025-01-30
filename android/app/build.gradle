@@ -5,6 +5,11 @@ plugins {
     id "dev.flutter.flutter-gradle-plugin"
 }
 
+dependencies {
+    implementation 'com.google.mlkit:text-recognition:16.0.0' // Latest version might differ
+}
+
+
 android {
     namespace = "com.example.doc_scanner_fl"
     compileSdk = flutter.compileSdkVersion
