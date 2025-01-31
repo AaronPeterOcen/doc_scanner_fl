@@ -29,6 +29,42 @@ class _RecognitionscreenState extends State<Recognitionscreen> {
     doTextRecognition();
   }
 
+// snackbar
+  void showCustomSnackBar(BuildContext context, String message) {
+    final snackBar = SnackBar(
+      content: Row(
+        children: [
+          Icon(Icons.info,
+              color: Colors.white, size: 20), // Equivalent to .info__icon
+          SizedBox(width: 8),
+          Text(
+            message,
+            style: TextStyle(
+              fontSize: 14, // Equivalent to .info__title
+              fontWeight: FontWeight.w500,
+              color: Colors.white,
+            ),
+          ),
+          Spacer(),
+          GestureDetector(
+            onTap: () => ScaffoldMessenger.of(context).hideCurrentSnackBar(),
+            child: Icon(Icons.close,
+                color: Colors.white, size: 20), // Equivalent to .info__close
+          ),
+        ],
+      ),
+      backgroundColor: Color(0xFF509AF8), // Equivalent to .info background
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(
+          borderRadius:
+              BorderRadius.circular(8)), // Equivalent to .info border-radius
+      margin: EdgeInsets.all(12),
+      duration: Duration(seconds: 3),
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
   String results = "";
 
   doTextRecognition() async {
@@ -90,11 +126,19 @@ class _RecognitionscreenState extends State<Recognitionscreen> {
                         Text("Results",
                             style:
                                 TextStyle(fontSize: 18, color: Colors.white)),
+                        // InkWell(
+                        //   onTap: () {
+                        //     Clipboard.setData(ClipboardData(text: results));
+                        //     SnackBar sn = SnackBar(content: Text("Copied"));
+                        //     ScaffoldMessenger.of(context).showSnackBar(sn);
+                        //   },
+                        //   child: Image.asset("assets/images/copy-50.png",
+                        //       width: 30, height: 30),
+                        // ),
                         InkWell(
                           onTap: () {
                             Clipboard.setData(ClipboardData(text: results));
-                            SnackBar sn = SnackBar(content: Text("Copied"));
-                            ScaffoldMessenger.of(context).showSnackBar(sn);
+                            showCustomSnackBar(context, "Copied to clipboard!");
                           },
                           child: Image.asset("assets/images/copy-50.png",
                               width: 30, height: 30),
