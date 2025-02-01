@@ -1,11 +1,13 @@
-// ignore_for_file: unused_local_variable
+// ignore_for_file: unused_local_variable, avoid_print
 
 import 'dart:io';
+// ignore: unused_import
 import 'dart:math';
 // import 'com.google.mlkit.vision.text.TextRecognition';
 // import 'com.google.mlkit.vision.text.TextRecognizer';
 // import 'com.google.mlkit.vision.text.latin.TextRecognizerOptions';
 import 'package:flutter/services.dart';
+import 'package:google_mlkit_entity_extraction/google_mlkit_entity_extraction.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:flutter/material.dart';
 
@@ -20,12 +22,14 @@ class Cardscanner extends StatefulWidget {
 
 class _CardscannerState extends State<Cardscanner> {
   late TextRecognizer textRecognizer;
+  late EntityExtractor entityExtractor;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
+    entityExtractor =
+        EntityExtractor(language: EntityExtractorLanguage.english);
     doTextRecognition();
   }
 
@@ -67,32 +71,34 @@ class _CardscannerState extends State<Cardscanner> {
 
   String results = "";
 
+// not working as intended
   doTextRecognition() async {
     InputImage inputImage = InputImage.fromFile(widget.image);
     final RecognizedText recognizedText =
         await textRecognizer.processImage(inputImage);
 
     results = recognizedText.text;
-    // String text = recognizedText.text;
+
+    final List<EntityAnnotation> annotations =
+        await entityExtractor.annotateText(results);
+
+    results = "";
+    for (final annotation in annotations) {
+      annotation.start;
+      annotation.end;
+      annotation.text;
+      for (final entity in annotation.entities) {
+        results += "${entity.type.name}\n${entity.rawValue}\n\n";
+      }
+    }
+
     print(results);
     setState(() {
       results;
     });
-
-    for (TextBlock block in recognizedText.blocks) {
-      final Rect rect = block.boundingBox;
-      final List<Point<int>> cornerPoints = block.cornerPoints;
-      final String text = block.text;
-      final List<String> languages = block.recognizedLanguages;
-
-      for (TextLine line in block.lines) {
-        // Same getters as TextBlock
-        for (TextElement element in line.elements) {
-          // Same getters as TextBlock
-        }
-      }
-    }
   }
+
+  /// not working as intended
 
   @override
   Widget build(BuildContext context) {
@@ -149,7 +155,10 @@ class _CardscannerState extends State<Cardscanner> {
                   SizedBox(height: 10),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text(results, style: TextStyle(fontSize: 18)),
+                    child: Text(
+                      results,
+                      style: TextStyle(fontSize: 18),
+                    ),
                   ),
                   SizedBox(
                     height: 10,
