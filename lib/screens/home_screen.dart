@@ -1,5 +1,8 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 
+import 'package:doc_scanner_fl/screens/cardScanner.dart';
 import 'package:doc_scanner_fl/screens/recognitionScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -21,6 +24,10 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     imagePicker = ImagePicker();
   }
+
+  bool scan = false;
+  bool enhance = false;
+  bool recognize = true;
 
   @override
   Widget build(BuildContext context) {
@@ -44,11 +51,20 @@ class _HomeScreenState extends State<HomeScreen> {
                               width: 35, height: 35),
                           Text(
                             'Scan',
-                            style: TextStyle(color: Colors.white),
+                            style: TextStyle(
+                                color: scan
+                                    ? const Color.fromARGB(255, 238, 30, 15)
+                                    : Colors.white),
                           ),
                         ],
                       ),
-                      onTap: () {},
+                      onTap: () {
+                        setState(() {
+                          scan = true;
+                          enhance = false;
+                          recognize = false;
+                        });
+                      },
                     ),
                     InkWell(
                       child: Column(
@@ -58,11 +74,20 @@ class _HomeScreenState extends State<HomeScreen> {
                               width: 35, height: 35),
                           Text(
                             "Recognize",
-                            style: TextStyle(color: Colors.white),
+                            style: TextStyle(
+                                color: recognize
+                                    ? const Color.fromARGB(255, 238, 30, 15)
+                                    : Colors.white),
                           )
                         ],
                       ),
-                      onTap: () {},
+                      onTap: () {
+                        setState(() {
+                          scan = false;
+                          enhance = false;
+                          recognize = true;
+                        });
+                      },
                     ),
                     InkWell(
                       child: Column(
@@ -72,11 +97,20 @@ class _HomeScreenState extends State<HomeScreen> {
                               width: 35, height: 35),
                           Text(
                             "Enhance",
-                            style: TextStyle(color: Colors.white),
+                            style: TextStyle(
+                                color: enhance
+                                    ? const Color.fromARGB(255, 238, 30, 15)
+                                    : Colors.white),
                           )
                         ],
                       ),
-                      onTap: () {},
+                      onTap: () {
+                        setState(() {
+                          scan = false;
+                          enhance = true;
+                          recognize = false;
+                        });
+                      },
                     )
                   ],
                 ),
@@ -114,11 +148,26 @@ class _HomeScreenState extends State<HomeScreen> {
                             source: ImageSource.gallery);
                         if (xFile != null) {
                           File image = File(xFile.path);
-                          // ignore: use_build_context_synchronously
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (ctx) {
-                            return Recognitionscreen(image);
-                          }));
+
+                          if (recognize) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (ctx) {
+                                  return Recognitionscreen(image);
+                                },
+                              ),
+                            );
+                          } else if (scan) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (ctx) {
+                                  return Cardscanner(image);
+                                },
+                              ),
+                            );
+                          }
                         }
                       },
                     )
