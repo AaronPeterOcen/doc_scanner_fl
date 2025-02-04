@@ -30,6 +30,7 @@ class _CardscannerState extends State<Cardscanner> {
     textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
     entityExtractor =
         EntityExtractor(language: EntityExtractorLanguage.english);
+    print("TextRecognizer and EntityExtractor initialized");
     doTextRecognition();
   }
 
