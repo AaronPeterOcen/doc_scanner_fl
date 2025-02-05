@@ -1,11 +1,7 @@
 // ignore_for_file: unused_local_variable, avoid_print
 
 import 'dart:io';
-// ignore: unused_import
-import 'dart:math';
-// import 'com.google.mlkit.vision.text.TextRecognition';
-// import 'com.google.mlkit.vision.text.TextRecognizer';
-// import 'com.google.mlkit.vision.text.latin.TextRecognizerOptions';
+
 import 'package:flutter/services.dart';
 import 'package:google_mlkit_entity_extraction/google_mlkit_entity_extraction.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
@@ -32,6 +28,15 @@ class _CardscannerState extends State<Cardscanner> {
         EntityExtractor(language: EntityExtractorLanguage.english);
     print("TextRecognizer and EntityExtractor initialized");
     doTextRecognition();
+  }
+
+  @override
+  void dispose() {
+    // Release resources
+    textRecognizer.close();
+    entityExtractor.close();
+    print("TextRecognizer and EntityExtractor resources released");
+    super.dispose();
   }
 
 // snackbar
