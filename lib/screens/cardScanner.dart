@@ -19,6 +19,7 @@ class Cardscanner extends StatefulWidget {
 class _CardscannerState extends State<Cardscanner> {
   late TextRecognizer textRecognizer;
   late EntityExtractor entityExtractor;
+  List<EntityDM> entitiesList = [];
 
   @override
   void initState() {
@@ -88,13 +89,15 @@ class _CardscannerState extends State<Cardscanner> {
     final List<EntityAnnotation> annotations =
         await entityExtractor.annotateText(results);
 
+    entitiesList.clear();
     results = "";
     for (final annotation in annotations) {
       annotation.start;
       annotation.end;
       annotation.text;
       for (final entity in annotation.entities) {
-        results += "${entity.type.name}\n${entity.rawValue}\n\n";
+        results += "${entity.type.name}\n${annotation.text}\n\n";
+        entitiesList.add(EntityDM(entity.type.name, annotation.text));
       }
     }
 
@@ -122,34 +125,80 @@ class _CardscannerState extends State<Cardscanner> {
         child: Column(
           children: [
             Center(child: Image.file(widget.image)),
-            Card(
-              margin: EdgeInsets.all(10),
-              color: Colors.white70,
-              child: Column(
-                children: [
-                  Container(
-                    color: const Color.fromARGB(255, 76, 175, 224),
-                    padding: EdgeInsets.all(8),
+            // Card(
+            //   margin: EdgeInsets.all(10),
+            //   color: Colors.white70,
+            //   child: Column(
+            //     children: [
+            //       Container(
+            //         color: const Color.fromARGB(255, 76, 175, 224),
+            //         padding: EdgeInsets.all(8),
+            //         child: Row(
+            //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //           children: [
+            //             Image.asset("assets/images/scanning-100.png",
+            //                 width: 30, height: 30),
+            //             Text("Results",
+            //                 style:
+            //                     TextStyle(fontSize: 18, color: Colors.white)),
+            //             // InkWell(
+            //             //   onTap: () {
+            //             //     Clipboard.setData(ClipboardData(text: results));
+            //             //     SnackBar sn = SnackBar(content: Text("Copied"));
+            //             //     ScaffoldMessenger.of(context).showSnackBar(sn);
+            //             //   },
+            //             //   child: Image.asset("assets/images/copy-50.png",
+            //             //       width: 30, height: 30),
+            //             // ),
+            //             InkWell(
+            //               onTap: () {
+            //                 Clipboard.setData(ClipboardData(text: results));
+            //                 showCustomSnackBar(context, "Copied to clipboard!");
+            //               },
+            //               child: Image.asset("assets/images/copy-50.png",
+            //                   width: 30, height: 30),
+            //             ),
+            //           ],
+            //         ),
+            //       ),
+            //       SizedBox(height: 10),
+            //       Padding(
+            //         padding: const EdgeInsets.all(8.0),
+            //         child: Text(
+            //           results,
+            //           style: TextStyle(fontSize: 18),
+            //         ),
+            //       ),
+            //       SizedBox(
+            //         height: 10,
+            //       )
+            //     ],
+            //   ),
+            // ),
+            ListView.builder(
+              itemBuilder: (context, position) {
+                return Card(
+                  color: const Color.fromARGB(255, 76, 175, 224),
+                  child: SizedBox(
+                    height: 50,
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Image.asset("assets/images/scanning-100.png",
-                            width: 30, height: 30),
-                        Text("Results",
-                            style:
-                                TextStyle(fontSize: 18, color: Colors.white)),
-                        // InkWell(
-                        //   onTap: () {
-                        //     Clipboard.setData(ClipboardData(text: results));
-                        //     SnackBar sn = SnackBar(content: Text("Copied"));
-                        //     ScaffoldMessenger.of(context).showSnackBar(sn);
-                        //   },
-                        //   child: Image.asset("assets/images/copy-50.png",
-                        //       width: 30, height: 30),
-                        // ),
+                        Icon(
+                          Icons.ac_unit_outlined,
+                          size: 15,
+                          color: Colors.white,
+                        ),
+                        Text(
+                          entitiesList[position].value,
+                          style: TextStyle(
+                              color: const Color.fromARGB(255, 255, 255, 255),
+                              fontSize: 15),
+                        ),
                         InkWell(
                           onTap: () {
-                            Clipboard.setData(ClipboardData(text: results));
+                            Clipboard.setData(ClipboardData(
+                                text: entitiesList[position].value));
                             showCustomSnackBar(context, "Copied to clipboard!");
                           },
                           child: Image.asset("assets/images/copy-50.png",
@@ -158,23 +207,22 @@ class _CardscannerState extends State<Cardscanner> {
                       ],
                     ),
                   ),
-                  SizedBox(height: 10),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      results,
-                      style: TextStyle(fontSize: 18),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  )
-                ],
-              ),
-            ),
+                );
+              },
+              itemCount: entitiesList.length,
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+            )
           ],
         ),
       ),
     );
   }
+}
+
+class EntityDM {
+  String name;
+  String value;
+
+  EntityDM(this.name, this.value) {}
 }
