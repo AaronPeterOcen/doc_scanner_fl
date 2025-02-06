@@ -115,10 +115,12 @@ class _CardscannerState extends State<Cardscanner> {
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 76, 175, 224),
         title: Center(
-            child: Text(
-          "Scanner",
-          style: TextStyle(color: Colors.white),
-        )),
+          child: Text(
+            "Scanner",
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       // ignore: avoid_unnecessary_containers
       body: SingleChildScrollView(
@@ -178,33 +180,42 @@ class _CardscannerState extends State<Cardscanner> {
             ListView.builder(
               itemBuilder: (context, position) {
                 return Card(
+                  margin: EdgeInsets.only(left: 20.0, right: 20.0, top: 10.0),
                   color: const Color.fromARGB(255, 76, 175, 224),
                   child: SizedBox(
                     height: 50,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Icon(
-                          Icons.ac_unit_outlined,
-                          size: 15,
-                          color: Colors.white,
-                        ),
-                        Text(
-                          entitiesList[position].value,
-                          style: TextStyle(
-                              color: const Color.fromARGB(255, 255, 255, 255),
-                              fontSize: 15),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            Clipboard.setData(ClipboardData(
-                                text: entitiesList[position].value));
-                            showCustomSnackBar(context, "Copied to clipboard!");
-                          },
-                          child: Image.asset("assets/images/copy-50.png",
-                              width: 30, height: 30),
-                        ),
-                      ],
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Icon(
+                            entitiesList[position].iconData,
+                            size: 15,
+                            color: Colors.white,
+                          ),
+                          Expanded(
+                            child: Text(
+                              entitiesList[position].value,
+                              style: TextStyle(
+                                  color:
+                                      const Color.fromARGB(255, 255, 255, 255),
+                                  fontSize: 15),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              Clipboard.setData(ClipboardData(
+                                  text: entitiesList[position].value));
+                              showCustomSnackBar(
+                                  context, "Copied to clipboard!");
+                            },
+                            child: Image.asset("assets/images/copy-50.png",
+                                width: 30, height: 30),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 );
@@ -223,6 +234,21 @@ class _CardscannerState extends State<Cardscanner> {
 class EntityDM {
   String name;
   String value;
+  IconData? iconData;
 
-  EntityDM(this.name, this.value) {}
+  EntityDM(this.name, this.value) {
+    if (name == 'phone') {
+      iconData = Icons.phone;
+    } else if (name == 'dateTime') {
+      iconData = Icons.date_range_rounded;
+    } else if (name == 'email') {
+      iconData = Icons.mail_sharp;
+    } else if (name == 'address') {
+      iconData = Icons.location_on_rounded;
+    } else if (name == 'url') {
+      iconData = Icons.web_sharp;
+    } else {
+      iconData = Icons.ac_unit_rounded;
+    }
+  }
 }

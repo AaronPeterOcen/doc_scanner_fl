@@ -100,10 +100,12 @@ class _RecognitionscreenState extends State<Recognitionscreen> {
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 76, 175, 224),
         title: Center(
-            child: Text(
-          "Recognition",
-          style: TextStyle(color: Colors.white),
-        )),
+          child: Text(
+            "Recognition",
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       // ignore: avoid_unnecessary_containers
       body: SingleChildScrollView(
